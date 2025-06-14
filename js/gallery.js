@@ -64,50 +64,47 @@ const images = [
     },
 ];
   
-const instances = {}
-const galleryBlock = document.querySelector(".gallery")
-const galleryShow = item => {
-	const original = item.getAttribute("data-source")
-	instances[original].show()
+const galleryBlock = document.querySelector(".gallery");
+for (const { preview, original, description } of images) {
+  const itemHTML = `
+    <li class="gallery-item">
+      <a class="gallery-link" href="${original}">
+        <img
+          class="gallery-image"
+          src="${preview}"
+          data-source="${original}"
+          alt="${description}"
+        />
+      </a>
+    </li>
+  `;
+  galleryBlock.insertAdjacentHTML("beforeend", itemHTML);
 }
-for (const image of images) {
-	const { preview, original, description } = image
-	const imageHTML = `
-		<div class="modal">
-			<img
-				class="modal-image"
-				src="${original}"
-				alt="${description}"
-			/>
-			<a class="close">
-				<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 32 32">
-					<path d="M32 3.223l-3.223-3.223-12.777 12.777-12.777-12.777-3.223 3.223 12.777 12.777-12.777 12.777 3.223 3.223 12.777-12.777 12.777 12.777 3.223-3.223-12.777-12.777 12.777-12.777z"/>
-				</svg>
-			</a>
-		</div>`
-	instances[original] = basicLightbox.create(imageHTML, {
-		onShow: instance => {
-			instance.element().querySelector(".close").onclick = () =>
-				instance.close()
-		},
-	})
-	galleryBlock.insertAdjacentHTML(
-		"beforeend",
-		`
-	<li class="gallery-item">
-		<a class="gallery-link" href="${original}">
-			<img
-				class="gallery-image"
-				src="${preview}"
-				data-source="${original}"
-				alt="${description}"
-			/>
-		</a>
-	</li>`
-	)
-}
-galleryBlock.addEventListener("click", e => {
-    if (e.target.nodeName !== "IMG") return;
-	e.preventDefault()
-	galleryShow(e.target)
-})
+
+galleryBlock.addEventListener("click", (e) => {
+  e.preventDefault();
+
+  const target = e.target;
+  if (target.nodeName !== "IMG") return;
+
+  const originalSrc = target.dataset.source;
+  const description = target.alt;
+
+  const instance = basicLightbox.create(
+    `
+    <img src="${originalSrc}" alt="${description}" />
+    <a class="close">
+      <svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 32 32">
+        <path d="M32 3.223l-3.223-3.223-12.777 12.777-12.777-12.777-3.223 3.223 12.777 12.777-12.777 12.777 3.223 3.223 12.777-12.777 12.777 12.777 3.223-3.223-12.777-12.777 12.777-12.777z"/>
+      </svg>
+    </a>
+    `,
+    {
+      onShow: (instance) => {
+        instance.element().querySelector(".close").onclick = () => instance.close();
+      },
+    }
+  );
+
+  instance.show();
+});

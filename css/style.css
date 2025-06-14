@@ -34,15 +34,9 @@ body {
 li{
     list-style: none;
 }
-.modal {
+.basicLightbox__placeholder {
     position: relative;
     padding: 20px 0;
-
-    .modal-image {
-        width: 900px;
-        max-width: 100%;
-        height: auto;
-    }
 
     .close {
         position: absolute;
@@ -62,5 +56,11 @@ li{
             fill: #fff;
             background-color: #404bbf;
         }
-    }
+
+        svg {
+            width: 8px;
+            height: 8px;
+            fill: #000;
+        }
+    } 
 }
